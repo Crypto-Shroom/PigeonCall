@@ -24,6 +24,17 @@ source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
 
 # 3️⃣ Install Dependencies
 pip install -r requirements.txt
+
+# Make sure all the files are downloaded correctly
+/twitter_bot
+│── bot.py               # Main execution file
+│── config.py            # Configuration management
+│── api_requests.py      # Handles API calls (GrokAI, TogetherAI)
+│── twitter_api.py       # Twitter posting logic
+│── logging_setup.py     # Logging management
+│── utils.py             # Utility functions (typos, truncation, etc.)
+│── config.ini           # Configuration file 
+
 ```
 
 ## 🔑 Configuration
