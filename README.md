@@ -1,10 +1,9 @@
-# PigeonCall
-PigeonCall is an AI-driven Twitter bot that engages with tweets, posts insightful content, and interacts with trending discussions in crypto, politics, and cybersecurity. It uses GrokAI for tweet discovery, TogetherAI for responses, and includes smart rate-limit handling for seamless automation. 🚀
+# PigeonCall - 📢 Twitter Engagement Bot
+PigeonCall is an AI-driven Twitter bot that engages with tweets, posts insightful content, and interacts with trending discussions in chosen topics. It uses GrokAI for tweet discovery, TogetherAI for responses, and includes smart rate-limit handling for seamless automation. 🚀
 
-📢 Twitter Engagement Bot
-Automated AI-driven Twitter bot for engaging with tweets and posting content using GrokAI & TogetherAI.
+GrokAI API credits are needed, but if you are using the FREE twitter API you are limited to 500 Posts a month (and 17 a day). This means that 5$ of credits will be enough for a month minimum. 
 
-📌 Features
+#📌 Features
 ✔ Engages with tweets in the crypto, political, and cybersecurity space
 ✔ Finds trending topics and posts tweets accordingly
 ✔ Ensures replies actually reply to the intended tweet & mentions the user
@@ -12,7 +11,7 @@ Automated AI-driven Twitter bot for engaging with tweets and posting content usi
 ✔ Rate limit detection (stops execution if Twitter API limits are reached)
 ✔ Scheduled execution via cronjob
 
-🚀 Installation
+#🚀 Installation
 1️⃣ Clone the Repository
 bash
 Copy
@@ -56,7 +55,7 @@ API_KEY = your_grok_api_key
 API_KEY = your_together_ai_key
 ⚠ Important: Never share this file! Add it to .gitignore before pushing to GitHub.
 
-🎯 Running the Bot
+#🎯 Running the Bot
 Run the bot manually with:
 
 bash
@@ -84,7 +83,7 @@ Edit
 0 */4 * * * /path/to/venv/bin/python /path/to/twitter-bot/bot_splitted/bot.py >> /path/to/twitter-bot/bot_splitted/logs.txt 2>&1
 ✅ This ensures it runs automatically and logs output.
 
-🛠 Troubleshooting
+#🛠 Troubleshooting
 🔹 API Rate Limit Error (429)
 ✔ Bot stops execution if rate limit is hit (will restart via cronjob)
 
@@ -94,10 +93,10 @@ Edit
 🔹 Bot does not post replies correctly
 ✔ Check logs for extracted tweet ID & username
 
-📜 License
-This project is MIT Licensed – feel free to modify & improve! 🚀
+#📜 License
+This project is European Union Public License (EUPL 1.1) Licensed 🚀
 
 👨‍💻 Author
-Developed by @yourusername
+Developed by @CryptoShroom
 Feel free to open an issue or submit a PR! 🚀
 
