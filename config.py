@@ -2,6 +2,10 @@ import os
 import logging
 from configparser import ConfigParser
 
+# ============================ #
+# 🚀 LOADING & PARSING CONFIG  #
+# ============================ #
+
 def ensure_utf8_config(file_path: str) -> None:
     """Ensures the config.ini file is UTF-8 encoded."""
     with open(file_path, 'r', encoding='ascii', errors='ignore') as f:
