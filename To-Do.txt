@@ -8,3 +8,4 @@ To-Do:
 6. move together AI choice etc. in config to enable easy adjustments
 7. fix rate limit checks (set own daily limits?)
 8. improve internal prompts + bring them to external .txt with adjustable profile, tone etc preferences
+9. Add imagegen + instagram integration
