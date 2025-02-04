@@ -6,3 +6,4 @@ To-Do:
 4. extend interface for options such as how many tweets per day, etc etc.
 5. add in readme explanation how to get the required API keys
 6. move together AI choice etc. in config to enable easy adjustments
+7. fix rate limit checks (set own daily limits?)
