@@ -91,6 +91,7 @@ Feel free to **fork** the repository and submit a **pull request**.
 
 
 ## 👨‍💻 Author
-Developed by @CryptoShroom
+Developed by @Crypto-Shroom
+Follow @CryptoshroomOG on X
 Feel free to open an issue or submit a PR! 🚀
 
