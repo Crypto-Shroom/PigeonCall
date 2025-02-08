@@ -6,6 +6,10 @@ first:
 GPT-choice (fix + Grok)
 Grok to generate topic and more, extract it all, use it for togetherAI generation, but also other things
 Fix reply=no situation
+repair input prompts
+use twitter AI: 100 reads, do 5reads in 1 to produce 5 writes per day and stay nicely in the limits (e.g. get 1 hashtag and 4 replies via API, reply to all of them - but with 1min in between)
+
+
 
 1. Automate cronlist insertion
 2. enable behavior choices (will adapt prompts) (based on questions AI will ask user optionally).
