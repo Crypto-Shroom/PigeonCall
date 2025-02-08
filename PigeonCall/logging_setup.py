@@ -2,9 +2,20 @@ import logging
 import os
 from datetime import datetime
 
-# ============================
-# 📝 LOGGING MANAGEMENT
-# ============================
+# ====================== #
+# 📝 LOGGING MANAGEMENT  #
+# ====================== #
+
+# ✅ Get the directory where bot.py is located
+bot_directory = os.path.dirname(os.path.abspath(__file__))
+
+# ✅ Ensure logs are stored inside the bot's directory
+log_dir = os.path.join(bot_directory, "logs")
+os.makedirs(log_dir, exist_ok=True)  # ✅ Create logs directory if it doesn’t exist
+
+# ✅ Set the correct log file path
+log_file = os.path.join(log_dir, "bot_log.txt")
+file_handler = logging.FileHandler(log_file, mode="a", encoding="utf-8")
 
 # Ensure logs directory exists
 log_dir = os.path.join(os.getcwd(), "logs")
@@ -12,14 +23,18 @@ os.makedirs(log_dir, exist_ok=True)
 
 # Set up logging
 log_file = os.path.join(log_dir, "bot_log.txt")
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler(log_file),  # Logs to file
-        logging.StreamHandler()  # Logs to console
-    ]
-)
+
+# ✅ Define handlers first
+file_handler = logging.FileHandler(log_file, mode="a", encoding="utf-8")  # ✅ Now writes inside logs/
+console_handler = logging.StreamHandler()
+
+# ✅ Set formatter
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+file_handler.setFormatter(formatter)
+console_handler.setFormatter(formatter)
+
+# ✅ Configure logging
+logging.basicConfig(level=logging.INFO, handlers=[file_handler, console_handler])
 
 def log_tweet_decision(context, is_reply, model, tweet_text, tweet_id=None, username=None):
     """Logs the decision to both console and a file."""
