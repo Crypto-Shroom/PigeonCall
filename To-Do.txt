@@ -1,5 +1,12 @@
 To-Do:
 
+
+first:
+
+GPT-choice (fix + Grok)
+Grok to generate topic and more, extract it all, use it for togetherAI generation, but also other things
+Fix reply=no situation
+
 1. Automate cronlist insertion
 2. enable behavior choices (will adapt prompts) (based on questions AI will ask user optionally).
 3. create interface that allows for insertion of config info
