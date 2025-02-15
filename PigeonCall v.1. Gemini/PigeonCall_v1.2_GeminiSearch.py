@@ -6,9 +6,15 @@ import tweepy
 from configparser import ConfigParser
 from google.api_core import exceptions as google_api_exceptions
 from google.oauth2 import service_account
-import google.generativeai as genai
+from google import genai
+from google.genai import types
+from google.genai.types import Tool, GenerateContentConfig, GoogleSearch
 import time
 
+
+# ============================
+# 🛠 LOGGING SETUP
+# ============================
 
 # Logging setup (adjust as needed)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -39,29 +45,47 @@ def load_config() -> ConfigParser:
 
 def gemini_generate_text(config, prompt: str, model_name: str = "{model_name}", temperature: float = 0.7) -> str:
     gemini_api_key = config.get("Gemini", "API_KEY")
-    genai.configure(api_key=gemini_api_key)
 
     try:
-        model = genai.GenerativeModel(model_name)
+        # Initialize the GenAI client
+        client = genai.Client(api_key=gemini_api_key)
+        
+        google_search_tool = Tool(
+            google_search = GoogleSearch()
+)
+        # Generate content with the specified model and tools
+        response = client.models.generate_content(
+            model = config.get("Gemini","MODEL"),
+            contents=prompt,
+            config = types.GenerateContentConfig(
+                temperature=temperature,
+                tools=[google_search_tool]
+            )
+        )
+        logging.info(f"Full Gemini API response: {response}")  # Log the full response
 
-        # Create a GenerationConfig object to set parameters:
-        generation_config = genai.GenerationConfig(temperature=temperature)
+        # Iterate over candidates and their content parts to extract text
+        for candidate in response.candidates:
+            for part in candidate.content.parts:
+                if part.text:
+                    return part.text
 
-        response = model.generate_content(prompt, generation_config=generation_config)
+        logging.error("No text found in the response candidates.")
+        return ""
 
-        if response.text:
-            return response.text
-        else:
-            logging.error(f"Gemini API returned an empty response: {response}")
-            return ""
-
-    except genai.ResourceExhaustedError as e:  # Correct exception class
+    except google_api_exceptions.ResourceExhausted as e:
         logging.error(f"Gemini API rate limit reached: {e}")
         return ""
     except Exception as e:
         logging.error(f"Gemini API request error: {e}")
         return ""
     
+
+# ============================
+# 📢 TWEET GENERATION
+# ============================
+
+
 def extract_tweet(raw_output: str) -> str:
     """
     Finds text between {{TWEET_START}} and {{TWEET_END}}.
@@ -70,12 +94,11 @@ def extract_tweet(raw_output: str) -> str:
     start_marker = "{{TWEET_START}}"
     end_marker = "{{TWEET_END}}"
 
-    lower_output = raw_output.lower()
-    start_idx = lower_output.find(start_marker.lower())
-    end_idx = lower_output.find(end_marker.lower())
+    start_idx = raw_output.find(start_marker)
+    end_idx = raw_output.find(end_marker)
 
     if start_idx != -1 and end_idx != -1 and end_idx > start_idx:
-        return raw_output[start_idx + len(start_marker) : end_idx].strip()
+        return raw_output[start_idx + len(start_marker):end_idx].strip()
     else:
         return raw_output.strip()
 
@@ -86,25 +109,20 @@ def generate_tweet_text(config, model_name) -> str:
     # Dynamically determine tweet length (between 140 and 280 characters)
     tweet_length = random.randint(180, 500)  # Or adjust range as needed
 
-  #
-  # Replace the prompt according to own preferences
-  #
-  
     prompt = (
-        "You are an advanced tweet generator AI. Your task is to produce a single, top-tier tweet crypto mushroom or politics topic that responds to a "
-        "trending post in a deep and meaningful way or in a shitpost stile. Be creative, bold etc. Try out things. This tweet must:\n"
-        "1) Contain ONLY one purposeful spelling mistake (for an authentic vibe), but make sure the spelling mistake is not in the hashtags.\n"
+        "You are an advanced tweet generator AI. Your task is to produce a single, top-tier tweet in a deep and meaningful or critical way or in a shitpost stile."
+        "This tweet must:\n"
+        "1) help getting Kaito Yaps. Research how to get Kaito yaps and what they are. Reference relevant topics so Kaito's system can detect your engagement.\n"
         "2) Be slightly controversial, sarcastic, or comedic. \n"
         "4) shows a deeper philosophical or political angle or be outrageous.\n"
-        "5) Use at least one relevant hashtag (e.g., #crypto, #mushroom, #politics, #philosophy, etc.).\n"
-        "6) Use at least one emoji.\n"
-        "7) helps getting Think Kaito Yaps.\n"
+        "5) Use at least one relevant hashtag. Search which hashtags and projects are relevant and help with Kaito Yaps. If you refer to a crypto project use their handle or hashtag in the tweet.\n"
+        "6) You can use emojis.\n"
+        "7) Contain ONLY one purposeful spelling mistake (for an authentic vibe), but make sure the spelling mistake is not in the hashtags.\n"
         "8) Avoid typical engagement cliches.\n"
         "8) Place ONLY the final tweet text between {{TWEET_START}} and {{TWEET_END}}.\n"
         f"9) Fit within {tweet_length} characters total.\n"
-        "10) Output nothing else beyond the tweet text in those markers, and do NOT include chain-of-thought or extra reasoning.\n"
+        "10) STOP! Output nothing else beyond the tweet text in those markers, and do NOT include chain-of-thought or extra reasoning. Do not include any pictures or videos\n"
     )
-
     # Call Gemini (or your LLM) with the prompt
     raw_response = gemini_generate_text(config, prompt, model_name=model_name)
     extracted_tweet = extract_tweet(raw_response)
@@ -117,6 +135,9 @@ def generate_tweet_text(config, model_name) -> str:
 
     return final_tweet
 
+# ============================
+# 📲 TWITTER API INTERACTION
+# ============================
 
 def post_tweet_legacy(
     api_key: str,
@@ -165,10 +186,12 @@ def post_tweet_legacy(
             return False
         
 # ============================
-# 📲 TWITTER API INTERACTION
+# 🚀  MAIN EXECUTION
 # ============================
         
 def main():
+    """ Loads configuration, generates a tweet, and posts it to Twitter """
+
     config = load_config()
 
     # Twitter credentials
